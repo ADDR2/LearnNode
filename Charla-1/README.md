@@ -57,6 +57,32 @@ El resultado en consola debería ser algo parecido al siguiente:
 
 ### Proceso Event Loop
 
+Node procesa todo tu código síncrono y delega todo lo asíncrono a este proceso. El `Event Loop` es un algoritmo que se ejecuta al final de haber ejecutado todo tu código síncrono. Sin embargo, cuenta con diferentes procesos y/o colas que se encargan de avisar cuando algún proceso asíncrono está listo.
+
+El `Event Loop` se ejecuta al final, pero los procesos asíncronos no esperan a este. Es decir, los procesos asíncronos empiezan a ejecutarse en paralelo (o concurrentemente dependiendo de tu arquitectura) pero deben esperar a que el `Event Loop` se ejecute y verifique si ya finalizaron para poder volver al ambiente de tu código y continuar ejecutando aquellas secciones que estaban esperando la resolución de este proceso asíncrono.
+
+Imagina que el `Event Loop` es un `while` que tiene una condición de parada y un código interno que se ejecuta en cada iteración. La condición de parada sería que no haya ningún proceso asíncrono en espera. A continuación se ilustra un código que describe el proceso que realiza el `Event Loop`:
+
+```js
+function noProcessWaiting() {
+	// Check for processes waiting.
+}
+
+while(noProcessWaiting()) {
+    timers();
+
+    pendingCallbacks();
+
+    idle();
+
+    poll();
+
+    check();
+
+    closeCallbacks();
+}
+```
+
 ### Manejo de paquetes/librerías/módulos
 
 ### Extensiones

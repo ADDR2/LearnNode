@@ -64,11 +64,11 @@ El `Event Loop` se ejecuta al final, pero los procesos asíncronos no esperan a 
 Imagina que el `Event Loop` es un `while` que tiene una condición de parada y un código interno que se ejecuta en cada iteración. La condición de parada sería que no haya ningún proceso asíncrono en espera. A continuación se ilustra un código que describe el proceso que realiza el `Event Loop`:
 
 ```js
-function noProcessWaiting() {
-	// Check for processes waiting.
+function processWaiting() {
+// Check for processes waiting.
 }
 
-while(noProcessWaiting()) {
+while(processWaiting()) {
     timers();
 
     pendingCallbacks();

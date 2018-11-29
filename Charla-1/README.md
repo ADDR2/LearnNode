@@ -49,6 +49,7 @@ El código de arriba es un ejemplo de un proceso no bloqueante, pues el procesam
 
 Esto se ilustra mejor en la siguiente imagen:
 
+![Grafica](https://github.com/ADDR2/LearnNode/blob/charla-1/Charla-1/Non-Blocking-Chart.png?raw=true)
 
 El resultado en consola debería ser algo parecido al siguiente:
 

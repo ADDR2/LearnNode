@@ -47,13 +47,31 @@ El código de arriba es un ejemplo de un proceso no bloqueante, pues el procesam
 	7. Se evalua si existe algún error en la lectura del archivo.
 	8. Se ejecuta la función log del objeto console. Por lo que se imprime en consola el contenido del archivo en forma de string.
 
+El resultado en consola debería ser algo parecido al siguiente:
+
+![Resultado](https://github.com/ADDR2/LearnNode/blob/charla-1/Charla-1/Result.png?raw=true)
+
 Esto se ilustra mejor en la siguiente imagen:
 
 ![Grafica](https://github.com/ADDR2/LearnNode/blob/charla-1/Charla-1/Non-Blocking-Chart.png?raw=true)
 
-El resultado en consola debería ser algo parecido al siguiente:
+En la parte superior de la imagen se ilustra el tiempo requerido para la ejecución de todo el código de manera no bloqueante, pero en la parte inferior se ilustra el tiempo requerido para la ejecución del código de manera bloqueante. Es decir, la imagen en la parte inferior sería el equivalente a el siguiente código:
 
-![Resultado](https://github.com/ADDR2/LearnNode/blob/charla-1/Charla-1/Result.png?raw=true)
+```js
+const { readFileSync } = require('fs');
+
+function printSomething() {
+    return Math.random()*10;
+}
+
+const data = readFileSync('./README.md', 'utf8');
+
+console.log('First log: ', data);
+
+console.log('Second log: ', 1+2);
+
+console.log('Third log: ', printSomething());
+```
 
 
 ### Proceso Event Loop
@@ -61,6 +79,20 @@ El resultado en consola debería ser algo parecido al siguiente:
 Node procesa todo tu código síncrono y delega todo lo asíncrono a este proceso. El `Event Loop` es un algoritmo que se ejecuta al final de haber ejecutado todo tu código síncrono. Sin embargo, cuenta con diferentes procesos y/o colas que se encargan de avisar cuando algún proceso asíncrono está listo.
 
 El `Event Loop` se ejecuta al final, pero los procesos asíncronos no esperan a este. Es decir, los procesos asíncronos empiezan a ejecutarse en paralelo (o concurrentemente dependiendo de tu arquitectura) pero deben esperar a que el `Event Loop` se ejecute y verifique si ya finalizaron para poder volver al ambiente de tu código y continuar ejecutando aquellas secciones que estaban esperando la resolución de este proceso asíncrono.
+
+Finalmente, el propósito del `Event Loop` es garantizar el comportamiento no bloqueante antes mencionado, de manera que tu código se ejecuta en un sólo hilo y las operaciones asíncronas se delegan a otros hilos para que al terminar de ejecutar tu código síncrono se ejecute el `Event Loop` y se verifique si aún hay operaciones o procesos pendientes.
+
+### Manejo de paquetes/librerías/módulos
+
+### Extensiones
+
+## Dependencias principales
+
+### V8
+
+### libuv
+
+## Event Loop
 
 Imagina que el `Event Loop` es un `while` que tiene una condición de parada y un código interno que se ejecuta en cada iteración. La condición de parada sería que no haya ningún proceso asíncrono en espera. A continuación se ilustra un código que describe el proceso que realiza el `Event Loop`:
 
@@ -83,7 +115,3 @@ while(processWaiting()) {
     closeCallbacks();
 }
 ```
-
-### Manejo de paquetes/librerías/módulos
-
-### Extensiones

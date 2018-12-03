@@ -84,13 +84,60 @@ Finalmente, el propósito del `Event Loop` es garantizar el comportamiento no bl
 
 ### Manejo de paquetes/librerías/módulos
 
+Node tiene una de las más grandes comunidades de desarrolladores debido al manejador de paquetes/módulos `npm`. Este manejador tiene su propia [página web](https://www.npmjs.com/) en la que se pueden publicar módulos y cualquier otra persona los puede descargar y utilizar inmediatamente.
+
+Todo proyecto desarrollado para Node contiene un archivo en la carpeta principal llamado `package.json`. Este archivo es la configuración que se aplicará a tu proyecto. Dentro del archivo puedes encontrar las dependencias de tu proyecto, la versión de node necesaria para tu proyecto, el repositorio relacionado a tu proyecto, los autores, scripts o comandos utilizados en tu proyecto, y otras configuraciones que pueden encontrar [aquí](https://docs.npmjs.com/files/package.json).
+
+Para poder incluir un módulo/paquete en tu proyecto simplemente debes ejecutar el comando:
+
+```
+$> npm install --save <the module>
+```
+
+Y todos los módulos se incluirán automáticamente en tu archivo de configuración (`package.json`).
+
+Todos los módulos/paquetes que agregues serán almacenados en una carpeta que se creará automáticamente llamada `node_modules`. Debes recordar no incluir esta carpeta en tus repositorios (no hagas push de esta carpeta), pues suelen ser muy pesadas y la mejor forma de volver a descargarte todos los módulos es sencillamente ejecutando el comando:
+
+```
+$> npm install
+```
+
+De manera que cualquier persona que se descargue tu proyecto y quiera ejecutarlo, debe ejecutar el comando anterior para descargar todas las dependencias.
+
+Una vez tengas incluidos/instalados todos los módulos/paquetes que necesites sólo debes usar la función `require` para acceder a ellos. Esta función se encargará de importar la dependencia que desees de tu carpeta `node_modules` o de la lista predefinida de dependencias de Node.
+
+Ejemplo de uso de una dependencia:
+```js
+const axios = require('axios');
+```
+
 ### Extensiones
+
+Node está compuesto en un porcentaje por código en lenguaje C++ y otro porcentaje en lenguaje Javascript. Sabiendo esto es natural hacer la siguiente pregunta: Es posible agregar módulos desde lo más interno de Node?. Es posible. De hecho, existen diferentes módulos populares que deben ser compilados en C++ para poder ser utilizados en tu proyecto. Un ejemplo de esto es [Sass](https://www.npmjs.com/package/node-sass).
+
+Para establecer una relación entre el código escrito en Javascript y C++ se utiliza la función `internalBinding` o anteriormente `process.binding`. Estas funciones se utilizan por todo el código de Node escrito en Javacript para ejecutar funciones en lenguaje C++.
 
 ## Dependencias principales
 
+Node está compuesto de varias impportantes dependencias. Estas dependencias lo convierten en lo que es y se explican a continuación.
+
 ### V8
 
+Debido a que Node ejecuta código escrito en Javascript debe tener un procesador del lenguaje. El V8 es precisamente eso, un procesador del lenguaje que se encarga de parsear y ejecutar tu código escrito en Javascript. Posteriormente Node se encargará de establecer las relaciones o referencias necesarias para poder acceder a las funcionalidades del sistema operativo.
+
+Para poder establecer una relación entre tu código en Javascript y las funcionalidades del sistema operativo ya se explicó que existe una función encargada de ejecutar funciones escritas en lenguaje C++.
+
 ### libuv
+
+Esta librería es la encargada de establecer un conjunto de hilos (thread pool) para hacer uso de las funcionalidades del sistema operativo de manera no bloqueante. Por defecto establece 4 hilos pero esto se puede modificar fácilmente.
+
+Esta librería está escrita completamente en C++.
+
+### Esquema de comunicación
+
+En la siguiente imagen se ilustra la forma de comunicación que se realiza internamente entre Node y las dependencias:
+
+![Esquema](https://github.com/ADDR2/LearnNode/blob/charla-1/Charla-1/Node-schema.png?raw=true)
 
 ## Event Loop
 

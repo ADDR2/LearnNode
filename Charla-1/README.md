@@ -162,3 +162,15 @@ while(processWaiting()) {
     closeCallbacks();
 }
 ```
+
+Cada una de las funciones significa una fase del `Event Loop` y cada fase contiene una cola (`FIFO`) de callbacks para ejecutar. Cuando el `Event Loop` entra en una fase ejecuta las operaciones necesarias para dicha fase y luego ejecuta los callbacks encolados hasta vaciar la cola o hasta llegar a un máximo establecido de callbacks. Al terminar de ejecutar los callbacks continuará con la siguiente fase.
+
+### Fases
+
+* **timers**: Esta fase ejecuta los callbacks agendados/programados por las funciones `setTimeout` y `setInterval`.
+* **pendingCallbacks**: Ejecuta los callbacks de entrada y salida (I/O) pospuesto para la siguiente iteración del `Event Loop`.
+* **idle, prepare**: No hay detalles pues Node usa esta fase sólo internamente.
+* **poll**: Esta fase agenda/programa nuevos eventos de entrada y salida (I/O), y ejecuta los callbacks relacionados a procesos de entrada y salida (I/O) terminados (no ejecuta callbacks de cierre, ni callbacks relacionados a `timers` ni los relacionados a `setImmediate`). Node puede llegar a bloquearse en esta fase.
+* **check**: Esta fase ejecuta los callbacks agendados/programados por la función `setImmediate`.
+* **close callbacks**: Ejecuta los callbacks relacionados a cierres. Ej: `socket.on('close', ...)`.
+

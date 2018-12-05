@@ -174,3 +174,52 @@ Cada una de las funciones significa una fase del `Event Loop` y cada fase contie
 * **check**: Esta fase ejecuta los callbacks agendados/programados por la función `setImmediate`.
 * **close callbacks**: Ejecuta los callbacks relacionados a cierres. Ej: `socket.on('close', ...)`.
 
+### Timers
+
+Un timer especifica un tiempo (ms) en el cual podrá ser ejecutado un callback proporcionado como parámetro. Esto significa que el callback no se ejecutará con toda certeza al llegar a ese tiempo, sino que el `Event Loop` podrá ejecutarlo siempre y cuando no haya algo más prioritario antes.
+
+Ejemplos de timers son:
+
+```js
+setTimeout(() => {}, 10);
+setInterval(() => {}, 10);
+```
+
+### Pending Callbacks
+
+Esta fase se encarga de ejecutar callbacks relacionados a operaciones del sistema operativo. Por ejemplo cuando se reciben errores del protocolo `TCP` al intentar conectar (`ECONNREFUSED`). Estos callbacks serán encolados en esta fase para ejecutarse casi al principio del ciclo del `Event Loop`.
+
+### Poll
+
+Esta es la fase más controversial del `Event Loop`, pues aquí Node puede bloquearse de manera que no sigue ejecutando hasta que tenga algo qué hacer o se llegue a un determinado tiempo. Por esta fase el `Event Loop` no se ejecuta infinidad de veces, pues si no hay nada qué ejecutar entonces este espera un determinado tiempo en esta fase para recibir trabajos/tareas qué ejecutar.
+
+Si no ha habido timers agendados/programados en la fase de `Timers`, la cola de la fase `Poll` está vacía y no hay callbacks agendados/programados con `setImmediate`, entonces se calculará un tiempo apropiado para esperar nuevos eventos de entrada y salida (I/O) para que sus callbacks sean ejecutados inmediatamente.
+
+Si no ha habido timers agendados/programados en la fase de `Timers`, la cola de la fase `Poll` está vacía y si hay callbacks agendados/programados con `setImmediate`, entonces se terminará la fase de `Poll` y se continuará a la fase de `Check`.
+
+Si la cola de la fase `Poll` no está vacía, entonces se ejecutarán los callbacks de la cola de manera síncrona hasta vaciar la cola o llegar a un límite de callbacks establecido.
+
+Una vez se haya vaciado la cola de esta fase, se revisará de nuevo si hay `Timers` agendados/programados que ya cumplieron su tiempo. De ser así, entonces el `Event Loop` volverá a la fase de Timers directamente para ejecutar los callbacks necesarios.
+
+### Check
+
+En esta fase se ejecutan los callbacks asociados a la función `setImmediate`. El `Event Loop` puede decidir si continuar con esta fase o seguir esperando por eventos en la fase `Poll`. Es decir, si el tiempo que debe esperar es mucho o ha esperado mucho y hay callbacks agendados/programados relacionados a la función `setImmediate` entonces puede decidir pasar a esta fase y posponer la fase `Poll` para la siguiente iteración.
+
+### Close Callbacks
+
+Si algún socket es cerrado de abruptamente como `socket.destroy()` el evento `close` será emitido en esta fase y su callback será ejecutado. También es posible que el evento sea emitido con la función `process.nextTick()` para que su callback sea ejecutado en cualquier fase del `Event Loop`.
+
+### process.nextTick()
+
+Esta función no forma parte de las fases del `Event Loop`. Sin embargo, es importante mencionarla debido a que esta función es la que te permitirá manipular el `Event Loop`.
+
+Esta función recibe como parámetros un callback y la cantidad de parámetros que desees para ser pasados como argumentos al callback. Lo que hará esta función es posponer la ejecución del callback pasado como argumento hasta la próxima vez que se ejecute una iteración del `Event Loop` pero se ejecutará primero que cualquier fase. En caso de que el `Event Loop` ya esté ejecutando una iteración, entonces se bloqueará o pausará por completo hasta ejecutar el callback y luego continuará con lo que estaba ejecutando.
+
+Un ejemplo sería el siguiente:
+
+```js
+process.nextTick(console.log, "First log");
+console.log("Second log");
+```
+
+En el ejemplo de arriba el mensaje `Second log` se imprimirá primero que el mensaje `First log`. Esto se debe a que la función `process.nextTick()` está posponiendo la ejecución del mensaje `First log` para la siguiente iteración del `Event Loop`.

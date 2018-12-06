@@ -1,6 +1,6 @@
 # Challenge - 4 de la charla 1
 
-Durante el desarrollo de este proyecto se creó los siguientes archivos:
+Durante el desarrollo de este proyecto se crearon los siguientes archivos:
 
 ```js
 const dataForModel = [

@@ -1,0 +1,43 @@
+
+html {
+    background: #29333c;
+}
+
+body {
+    margin: 2px 10px;
+}
+
+body > form {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 205px calc(100% - 205px);
+}
+
+body > form > span, body > form > pre {
+    margin: 0;
+    color: #49d240;
+    font-family: monospace;
+    font-size: 16px;
+}
+
+body > form > input {
+    background: #29333c;
+    padding: 0;
+    margin: 0;
+    outline-offset: 0;
+    border: unset;
+    color: #49d240;
+    font-family: monospace;
+    font-size: 16px;
+    outline: 0;
+}
+
+body > form > input:focus {
+    border: unset;
+    outline: 0;
+}
+
+body > form > input:click {
+    border: unset;
+    outline: 0;
+}
